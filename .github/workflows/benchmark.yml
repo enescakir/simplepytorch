@@ -1,75 +1,28 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Benchmark
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubicloud-gpu-standard-1-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    strategy:
+      matrix:
+        index: [1, 2, 3, 4, 5, 6, 7, 8]
+    name: runner ${{ matrix.index }}
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
-      # Runs a single command using the runners shell
+      - name: nvidia-smi
+        run: nvidia-smi
+
       - name: Install requirements
         run: pip install -r requirements.txt
 
       - name: Create /workspace/data directory
-        run: |
-          mkdir -p ~/workspace/data
+        run: mkdir -p ~/workspace/data
 
-      # Runs a set of commands using the runners shell
       - name: Run benchmark
-        run: |
-          python basic_cpu_gpu_benchmark.py
-  build2:
-    runs-on: ubicloud-gpu-standard-1-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install requirements
-        run: pip install -r requirements.txt
-      - name: Create /workspace/data directory
-        run: |
-          mkdir -p ~/workspace/data
-      - name: Run benchmark
-        run: |
-          python basic_cpu_gpu_benchmark.py
-  build3:
-    runs-on: ubicloud-gpu-standard-1-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install requirements
-        run: pip install -r requirements.txt
-      - name: Create /workspace/data directory
-        run: |
-          mkdir -p ~/workspace/data
-      - name: Run benchmark
-        run: |
-          python basic_cpu_gpu_benchmark.py
-  build4:
-    runs-on: ubicloud-gpu-standard-1-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install requirements
-        run: pip install -r requirements.txt
-      - name: Create /workspace/data directory
-        run: |
-          mkdir -p ~/workspace/data
-      - name: Run benchmark
-        run: |
-          python basic_cpu_gpu_benchmark.py
+        run: python basic_cpu_gpu_benchmark.py
